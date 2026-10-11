@@ -32,8 +32,10 @@ import {
   DialogFooter,
 } from "@/components/ui/Dialog"
 import { fadeInItem, staggerContainer } from "@/lib/motion"
+import { usePermission } from "@/lib/permissions"
 
 export function SaleListPage() {
+  const { isCashier } = usePermission()
   const [searchParams, setSearchParams] = useSearchParams()
 
   const [searchTerm, setSearchTerm] = React.useState(searchParams.get("q") || "")
@@ -95,8 +97,12 @@ export function SaleListPage() {
     >
       {/* Page Header */}
       <PageHeader
-        title="Sales History"
-        description="Complete transaction ledger with real-time stock deduction audit trails."
+        title={isCashier ? "My Sales" : "Sales History"}
+        description={
+          isCashier
+            ? "Your recorded transactions with printable thermal receipts."
+            : "Complete transaction ledger with real-time stock deduction audit trails."
+        }
         icon={<Receipt className="h-6 w-6 text-primary" />}
         actions={
           <Link to="/sales/new">
@@ -112,7 +118,9 @@ export function SaleListPage() {
       <motion.div variants={fadeInItem} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-surface border border-border rounded-lg p-4 flex items-center justify-between">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-charcoal-muted">Recorded Transactions</p>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-charcoal-muted">
+              {isCashier ? "My Transactions" : "Recorded Transactions"}
+            </p>
             <p className="text-xl font-bold text-charcoal mt-1">{formatNumber(totalSalesCount)}</p>
           </div>
           <div className="h-9 w-9 rounded-md bg-secondary flex items-center justify-center text-primary">
@@ -122,7 +130,9 @@ export function SaleListPage() {
 
         <div className="bg-surface border border-border rounded-lg p-4 flex items-center justify-between">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-charcoal-muted">Filtered Revenue</p>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-charcoal-muted">
+              {isCashier ? "My Revenue" : "Filtered Revenue"}
+            </p>
             <p className="text-xl font-bold text-primary mt-1">{formatINR(totalRevenue)}</p>
           </div>
           <div className="h-9 w-9 rounded-md bg-secondary flex items-center justify-center text-primary">
@@ -132,7 +142,9 @@ export function SaleListPage() {
 
         <div className="bg-surface border border-border rounded-lg p-4 flex items-center justify-between">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-charcoal-muted">Avg Transaction Value</p>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-charcoal-muted">
+              {isCashier ? "My Avg Transaction" : "Avg Transaction Value"}
+            </p>
             <p className="text-xl font-bold text-charcoal mt-1">{formatINR(averageTicket)}</p>
           </div>
           <div className="h-9 w-9 rounded-md bg-secondary flex items-center justify-center text-primary">

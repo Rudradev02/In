@@ -15,6 +15,7 @@ import { toast } from "sonner"
 
 import { apiClient, ApiClientError } from "@/lib/api-client"
 import { type Category } from "@/lib/types"
+import { ActionGuard } from "@/lib/permissions"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { Badge } from "@/components/ui/Badge"
@@ -187,10 +188,12 @@ export function CategoryListPage() {
         description="Organize catalog taxonomy and track product distribution across departments."
         icon={<Tags className="h-6 w-6 text-primary" />}
         actions={
-          <Button onClick={handleOpenAdd} className="shadow-xs">
-            <Plus className="h-4 w-4 mr-1.5" />
-            Add Category
-          </Button>
+          <ActionGuard role={["Admin", "Manager"]} tooltipMessage="Only Managers and Admins can create categories.">
+            <Button onClick={handleOpenAdd} className="shadow-xs">
+              <Plus className="h-4 w-4 mr-1.5" />
+              Add Category
+            </Button>
+          </ActionGuard>
         }
       />
 
@@ -270,10 +273,12 @@ export function CategoryListPage() {
                     Clear search
                   </Button>
                 ) : (
-                  <Button size="sm" onClick={handleOpenAdd}>
-                    <Plus className="h-3.5 w-3.5 mr-1" />
-                    Create Category
-                  </Button>
+                  <ActionGuard role={["Admin", "Manager"]} tooltipMessage="Only Managers and Admins can create categories.">
+                    <Button size="sm" onClick={handleOpenAdd}>
+                      <Plus className="h-3.5 w-3.5 mr-1" />
+                      Create Category
+                    </Button>
+                  </ActionGuard>
                 )
               }
             />
@@ -313,24 +318,28 @@ export function CategoryListPage() {
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-1">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleOpenEdit(cat)}
-                        title="Edit category"
-                        className="h-8 w-8 p-0"
-                      >
-                        <Pencil className="h-3.5 w-3.5 text-charcoal-muted" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setDeletingCategory(cat)}
-                        title="Delete category"
-                        className="h-8 w-8 p-0 hover:text-status-error-text"
-                      >
-                        <Trash2 className="h-3.5 w-3.5 text-charcoal-muted hover:text-status-error-text" />
-                      </Button>
+                      <ActionGuard role={["Admin", "Manager"]} tooltipMessage="Only Managers and Admins can edit categories.">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleOpenEdit(cat)}
+                          title="Edit category"
+                          className="h-8 w-8 p-0"
+                        >
+                          <Pencil className="h-3.5 w-3.5 text-charcoal-muted" />
+                        </Button>
+                      </ActionGuard>
+                      <ActionGuard role={["Admin", "Manager"]} tooltipMessage="Only Managers and Admins can delete categories.">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setDeletingCategory(cat)}
+                          title="Delete category"
+                          className="h-8 w-8 p-0 hover:text-status-error-text"
+                        >
+                          <Trash2 className="h-3.5 w-3.5 text-charcoal-muted hover:text-status-error-text" />
+                        </Button>
+                      </ActionGuard>
                     </div>
                   </TableCell>
                 </TableRow>

@@ -19,7 +19,10 @@ import { ProductDetailPage } from "@/features/products/ProductDetailPage"
 import { CategoryListPage } from "@/features/categories/CategoryListPage"
 import { SaleListPage } from "@/features/sales/SaleListPage"
 import { SaleCreatePage } from "@/features/sales/SaleCreatePage"
+import { UsersPage } from "@/features/users/UsersPage"
+import { ForbiddenPage } from "@/features/auth/ForbiddenPage"
 import { AppShell } from "@/components/layout/AppShell"
+import { type Role } from "@/lib/types"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -54,6 +57,21 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   }
 
   return <AppShell>{children}</AppShell>
+}
+
+// Role Protected Route Guard
+function RoleRoute({
+  roles,
+  children,
+}: {
+  roles: Role[]
+  children: React.ReactNode
+}) {
+  const { user } = useAuth()
+  if (user?.role && !roles.includes(user.role)) {
+    return <ForbiddenPage />
+  }
+  return <>{children}</>
 }
 
 // Public Auth Route Guard
@@ -113,7 +131,9 @@ export default function App() {
               path="/"
               element={
                 <ProtectedRoute>
-                  <DashboardPage />
+                  <RoleRoute roles={["Admin", "Manager"]}>
+                    <DashboardPage />
+                  </RoleRoute>
                 </ProtectedRoute>
               }
             />
@@ -154,6 +174,24 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <SaleCreatePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/users"
+              element={
+                <ProtectedRoute>
+                  <RoleRoute roles={["Admin"]}>
+                    <UsersPage />
+                  </RoleRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/403"
+              element={
+                <ProtectedRoute>
+                  <ForbiddenPage />
                 </ProtectedRoute>
               }
             />

@@ -24,6 +24,7 @@ import { Skeleton } from "@/components/ui/Skeleton"
 import { ErrorState } from "@/components/ui/ErrorState"
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog"
 import { PageHeader } from "@/components/ui/PageHeader"
+import { ActionGuard } from "@/lib/permissions"
 import {
   Dialog,
   DialogContent,
@@ -137,19 +138,21 @@ export function ProductDetailPage() {
         }
         actions={
           <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                setIsAdjustOpen(true)
-                setAdjustmentAmount(0)
-                setAdjustmentReason("")
-                setAdjustError(null)
-              }}
-            >
-              <SlidersHorizontal className="h-3.5 w-3.5 mr-1" />
-              Adjust Stock
-            </Button>
+            <ActionGuard role={["Admin", "Manager"]} tooltipMessage="Only Managers and Admins can adjust stock.">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setIsAdjustOpen(true)
+                  setAdjustmentAmount(0)
+                  setAdjustmentReason("")
+                  setAdjustError(null)
+                }}
+              >
+                <SlidersHorizontal className="h-3.5 w-3.5 mr-1" />
+                Adjust Stock
+              </Button>
+            </ActionGuard>
 
             <Link to={`/sales/new?product=${product.id}`}>
               <Button size="sm">
@@ -158,14 +161,16 @@ export function ProductDetailPage() {
               </Button>
             </Link>
 
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => setIsDeleteOpen(true)}
-              title="Delete product"
-            >
-              <Trash2 className="h-3.5 w-3.5" />
-            </Button>
+            <ActionGuard role={["Admin", "Manager"]} tooltipMessage="Only Managers and Admins can delete products.">
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => setIsDeleteOpen(true)}
+                title="Delete product"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </Button>
+            </ActionGuard>
           </div>
         }
       />
