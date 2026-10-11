@@ -397,10 +397,13 @@ export function SaleCreatePage() {
           {completedSale && (
             <div className="space-y-6">
               <div className="text-center border-b border-border pb-4">
-                <div className="h-10 w-10 rounded-full bg-secondary text-primary mx-auto flex items-center justify-center mb-2">
-                  <CheckCircle2 className="h-5 w-5" />
+                <div className="flex justify-center mb-2">
+                  <img src="/invlab-logo.png" alt="InvLab" className="h-7 w-auto object-contain" />
                 </div>
-                <h3 className="text-base font-bold text-primary">Sale Recorded Successfully</h3>
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-status-success-bg text-status-success-text text-[11px] font-semibold mb-1">
+                  <CheckCircle2 className="h-3.5 w-3.5" />
+                  <span>Sale Recorded Successfully</span>
+                </div>
                 <div className="mt-1 font-mono text-xs font-semibold text-charcoal">
                   #TX-{String(completedSale.id).padStart(6, "0")}
                 </div>

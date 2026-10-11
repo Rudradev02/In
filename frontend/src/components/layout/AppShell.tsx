@@ -10,7 +10,6 @@ import {
   LogOut,
   Menu,
   X,
-  Boxes,
   Calendar,
 } from "lucide-react"
 import { useAuth } from "@/features/auth/AuthContext"
@@ -51,14 +50,10 @@ export function AppShell({ children }: AppShellProps) {
       {/* Desktop Sidebar */}
       <aside className="hidden lg:flex w-64 flex-col border-r border-border bg-surface shrink-0">
         {/* Brand Header */}
-        <div className="flex h-16 items-center gap-3 px-6 border-b border-border">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-xs">
-            <Boxes className="h-5 w-5" />
-          </div>
-          <div>
-            <h1 className="text-base font-bold tracking-tight text-primary leading-tight">InvLab</h1>
-            <p className="text-[10px] font-medium text-charcoal-muted uppercase tracking-wider">Inventory Hub</p>
-          </div>
+        <div className="flex h-16 items-center px-5 border-b border-border">
+          <Link to="/" className="flex items-center">
+            <img src="/invlab-logo.png" alt="InvLab" className="h-8 w-auto object-contain" />
+          </Link>
         </div>
 
         {/* Navigation Links */}
@@ -163,13 +158,10 @@ export function AppShell({ children }: AppShellProps) {
               transition={{ type: "spring", damping: 28, stiffness: 280 }}
               className="fixed inset-y-0 left-0 z-50 w-72 bg-surface shadow-xl flex flex-col lg:hidden border-r border-border"
             >
-              <div className="flex h-16 items-center justify-between px-6 border-b border-border">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                    <Boxes className="h-4 w-4" />
-                  </div>
-                  <span className="font-bold text-primary">InvLab</span>
-                </div>
+              <div className="flex h-16 items-center justify-between px-5 border-b border-border">
+                <Link to="/" onClick={() => setMobileOpen(false)} className="flex items-center">
+                  <img src="/invlab-logo.png" alt="InvLab" className="h-7 w-auto object-contain" />
+                </Link>
                 <button
                   onClick={() => setMobileOpen(false)}
                   className="p-1.5 text-charcoal-muted hover:text-charcoal rounded-md cursor-pointer"
