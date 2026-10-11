@@ -1,4 +1,4 @@
-# Stockroom — Inventory & Sales Management System
+# InvLab — Inventory & Sales Management System
 
 A complete, polished Django inventory and sales management workspace built for small businesses and portfolio showcase. It tracks products, categories, real-time stock levels, and sales transactions in a clean, responsive web application.
 

@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}Stockroom{% endblock %} · Stockroom</title>
+  <title>{% block title %}InvLab{% endblock %} · InvLab</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
@@ -16,7 +16,7 @@
 {% if user.is_authenticated %}
   <div class="app-shell">
     <aside class="sidebar">
-      <a class="brand" href="{% url 'dashboard' %}"><span class="brand-mark"><i class="bi bi-box-seam"></i></span><span>stockroom</span></a>
+      <a class="brand" href="{% url 'dashboard' %}"><span class="brand-mark"><i class="bi bi-box-seam"></i></span><span>InvLab</span></a>
       <div class="sidebar-label">Workspace</div>
       <nav class="nav flex-column gap-1">
         <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}"><i class="bi bi-grid-1x2-fill"></i> Overview</a>
@@ -37,7 +37,7 @@
     </aside>
     <main class="main-content">
       <header class="topbar">
-        <div class="mobile-brand"><span class="brand-mark"><i class="bi bi-box-seam"></i></span><strong>stockroom</strong></div>
+        <div class="mobile-brand"><span class="brand-mark"><i class="bi bi-box-seam"></i></span><strong>InvLab</strong></div>
         <div class="topbar-actions"><span class="topbar-date"><i class="bi bi-calendar3"></i> {% now "l, F j, Y" %}</span><a class="icon-button" href="{% url 'sale-create' %}" title="Record a sale"><i class="bi bi-plus-lg"></i></a><div class="avatar avatar-sm">{{ user.username|first|upper }}</div></div>
       </header>
       <div class="content-wrap">
