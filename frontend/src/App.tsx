@@ -8,7 +8,6 @@ import {
 } from "react-router-dom"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { Toaster } from "sonner"
-import { Boxes } from "lucide-react"
 
 import { AuthProvider, useAuth } from "@/features/auth/AuthContext"
 import { LoginPage } from "@/features/auth/LoginPage"
@@ -40,9 +39,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground animate-pulse">
-            <Boxes className="h-6 w-6" />
-          </div>
+          <img src="/invlab-icon.png" alt="InvLab" className="h-12 w-12 object-contain animate-pulse" />
           <p className="text-xs font-semibold uppercase tracking-wider text-charcoal-muted">
             Initializing InvLab...
           </p>
@@ -65,9 +62,7 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground animate-pulse">
-          <Boxes className="h-5 w-5" />
-        </div>
+        <img src="/invlab-icon.png" alt="InvLab" className="h-10 w-10 object-contain animate-pulse" />
       </div>
     )
   }

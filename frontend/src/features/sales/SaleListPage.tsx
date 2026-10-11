@@ -12,7 +12,6 @@ import {
   FileText,
   DollarSign,
   TrendingUp,
-  Boxes,
 } from "lucide-react"
 
 import { apiClient } from "@/lib/api-client"
@@ -343,11 +342,8 @@ export function SaleListPage() {
             <div className="space-y-6">
               {/* Receipt Header */}
               <div className="text-center border-b border-border pb-4">
-                <div className="flex items-center justify-center gap-2 mb-1">
-                  <div className="h-6 w-6 rounded bg-primary text-primary-foreground flex items-center justify-center">
-                    <Boxes className="h-3.5 w-3.5" />
-                  </div>
-                  <h3 className="text-base font-bold text-primary">InvLab</h3>
+                <div className="flex justify-center mb-1">
+                  <img src="/invlab-logo.png" alt="InvLab" className="h-7 w-auto object-contain" />
                 </div>
                 <p className="text-[11px] text-charcoal-muted uppercase tracking-wider">Official Sales Receipt</p>
                 <div className="mt-2 text-xs font-mono font-semibold text-charcoal">

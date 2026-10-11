@@ -1,7 +1,7 @@
 import * as React from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { motion } from "framer-motion"
-import { Boxes, ArrowRight, ShieldCheck } from "lucide-react"
+import { ArrowRight, ShieldCheck } from "lucide-react"
 import { useAuth } from "./AuthContext"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
@@ -47,11 +47,10 @@ export function LoginPage() {
         transition={{ duration: 0.3 }}
         className="w-full max-w-md space-y-6"
       >
-        <div className="text-center space-y-2">
-          <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
-            <Boxes className="h-6 w-6" />
+        <div className="text-center space-y-3">
+          <div className="flex justify-center">
+            <img src="/invlab-logo.png" alt="InvLab" className="h-12 w-auto object-contain" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-primary">Sign in to InvLab</h1>
           <p className="text-xs text-charcoal-muted">Modern Inventory & Sales Management Workspace</p>
         </div>
 
