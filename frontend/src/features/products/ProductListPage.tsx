@@ -23,8 +23,6 @@ import { Skeleton } from "@/components/ui/Skeleton"
 import { EmptyState } from "@/components/ui/EmptyState"
 import { ErrorState } from "@/components/ui/ErrorState"
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog"
-import { PageHeader } from "@/components/ui/PageHeader"
-import { ActionGuard } from "@/lib/permissions"
 import {
   Dialog,
   DialogContent,
@@ -221,18 +219,17 @@ export function ProductListPage() {
   return (
     <motion.div variants={staggerContainer} initial="initial" animate="animate" className="space-y-6 text-left">
       {/* Page Header */}
-      <PageHeader
-        title="Products & Inventory"
-        description="Manage stock levels, SKUs, pricing, and catalog categories."
-        actions={
-          <ActionGuard role={["Admin", "Manager"]} tooltipMessage="Only Managers and Admins can create products.">
-            <Button onClick={openAddModal} size="sm" className="shadow-xs">
-              <Plus className="h-4 w-4 mr-1" />
-              Add Product
-            </Button>
-          </ActionGuard>
-        }
-      />
+      <motion.div variants={fadeInItem} className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+          <span className="text-xs font-semibold uppercase tracking-wider text-primary">Catalog</span>
+          <h1 className="text-2xl font-bold tracking-tight text-charcoal">Products & Inventory</h1>
+          <p className="text-xs text-charcoal-muted mt-0.5">Manage stock levels, SKUs, pricing, and catalog categories</p>
+        </div>
+        <Button onClick={openAddModal} size="sm">
+          <Plus className="h-4 w-4 mr-1" />
+          Add Product
+        </Button>
+      </motion.div>
 
       {/* Filter & Search Bar */}
       <motion.div variants={fadeInItem} className="flex flex-col md:flex-row items-center gap-3 bg-surface p-3.5 rounded-lg border border-border">
@@ -361,47 +358,39 @@ export function ProductListPage() {
                     )}
                   </TableCell>
                   <TableCell className="text-right space-x-1">
-                    <ActionGuard role={["Admin", "Manager"]} tooltipMessage="Only Managers and Admins can adjust stock.">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        title="Adjust inventory quantity"
-                        onClick={() => {
-                          setAdjustingProduct(prod)
-                          setAdjustmentAmount(0)
-                          setAdjustmentReason("")
-                          setAdjustError(null)
-                        }}
-                        className="h-7 px-2 text-xs"
-                      >
-                        <SlidersHorizontal className="h-3.5 w-3.5 mr-1" />
-                        Adjust
-                      </Button>
-                    </ActionGuard>
-
-                    <ActionGuard role={["Admin", "Manager"]} tooltipMessage="Only Managers and Admins can edit products.">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        title="Edit product"
-                        onClick={() => openEditModal(prod)}
-                        className="h-7 w-7 p-0"
-                      >
-                        <Pencil className="h-3.5 w-3.5 text-charcoal-muted hover:text-charcoal" />
-                      </Button>
-                    </ActionGuard>
-
-                    <ActionGuard role={["Admin", "Manager"]} tooltipMessage="Only Managers and Admins can delete products.">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        title="Delete product"
-                        onClick={() => setDeletingProduct(prod)}
-                        className="h-7 w-7 p-0 hover:bg-status-error-bg"
-                      >
-                        <Trash2 className="h-3.5 w-3.5 text-charcoal-muted hover:text-status-error-text" />
-                      </Button>
-                    </ActionGuard>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      title="Adjust inventory quantity"
+                      onClick={() => {
+                        setAdjustingProduct(prod)
+                        setAdjustmentAmount(0)
+                        setAdjustmentReason("")
+                        setAdjustError(null)
+                      }}
+                      className="h-7 px-2 text-xs"
+                    >
+                      <SlidersHorizontal className="h-3.5 w-3.5 mr-1" />
+                      Adjust
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      title="Edit product"
+                      onClick={() => openEditModal(prod)}
+                      className="h-7 w-7 p-0"
+                    >
+                      <Pencil className="h-3.5 w-3.5 text-charcoal-muted hover:text-charcoal" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      title="Delete product"
+                      onClick={() => setDeletingProduct(prod)}
+                      className="h-7 w-7 p-0 hover:bg-status-error-bg"
+                    >
+                      <Trash2 className="h-3.5 w-3.5 text-charcoal-muted hover:text-status-error-text" />
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}

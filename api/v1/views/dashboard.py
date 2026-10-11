@@ -8,7 +8,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 
-from api.permissions import CanViewReports
 from inventory.models import Category, Product
 from sales.models import Sale
 from ..serializers.dashboard import DashboardStatsSerializer
@@ -17,7 +16,7 @@ from ..serializers.sales import SaleSerializer
 
 
 class DashboardStatsView(APIView):
-    permission_classes = [IsAuthenticated, CanViewReports]
+    permission_classes = [IsAuthenticated]
 
     @extend_schema(
         parameters=[

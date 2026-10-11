@@ -1,6 +1,5 @@
 from decimal import Decimal
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Group
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -19,8 +18,6 @@ class APITests(APITestCase):
             first_name="Test",
             last_name="User",
         )
-        manager_group, _ = Group.objects.get_or_create(name="Manager")
-        self.user.groups.add(manager_group)
         self.category = Category.objects.create(
             name="Hardware",
             description="Computer parts and accessories",

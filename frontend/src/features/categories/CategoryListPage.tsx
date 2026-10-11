@@ -15,7 +15,6 @@ import { toast } from "sonner"
 
 import { apiClient, ApiClientError } from "@/lib/api-client"
 import { type Category } from "@/lib/types"
-import { ActionGuard } from "@/lib/permissions"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { Badge } from "@/components/ui/Badge"
@@ -24,7 +23,6 @@ import { Skeleton } from "@/components/ui/Skeleton"
 import { EmptyState } from "@/components/ui/EmptyState"
 import { ErrorState } from "@/components/ui/ErrorState"
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog"
-import { PageHeader } from "@/components/ui/PageHeader"
 import {
   Dialog,
   DialogContent,
@@ -183,19 +181,24 @@ export function CategoryListPage() {
       className="space-y-6"
     >
       {/* Page Header */}
-      <PageHeader
-        title="Categories"
-        description="Organize catalog taxonomy and track product distribution across departments."
-        icon={<Tags className="h-6 w-6 text-primary" />}
-        actions={
-          <ActionGuard role={["Admin", "Manager"]} tooltipMessage="Only Managers and Admins can create categories.">
-            <Button onClick={handleOpenAdd} className="shadow-xs">
-              <Plus className="h-4 w-4 mr-1.5" />
-              Add Category
-            </Button>
-          </ActionGuard>
-        }
-      />
+      <motion.div variants={fadeInItem} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <Tags className="h-6 w-6 text-primary" />
+            <h1 className="text-2xl font-bold tracking-tight text-charcoal">Categories</h1>
+          </div>
+          <p className="text-xs text-charcoal-muted mt-1">
+            Organize catalog taxonomy and track product distribution across departments.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <Button onClick={handleOpenAdd} className="shadow-xs">
+            <Plus className="h-4 w-4 mr-1.5" />
+            Add Category
+          </Button>
+        </div>
+      </motion.div>
 
       {/* KPI Overview Chips */}
       <motion.div variants={fadeInItem} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -273,12 +276,10 @@ export function CategoryListPage() {
                     Clear search
                   </Button>
                 ) : (
-                  <ActionGuard role={["Admin", "Manager"]} tooltipMessage="Only Managers and Admins can create categories.">
-                    <Button size="sm" onClick={handleOpenAdd}>
-                      <Plus className="h-3.5 w-3.5 mr-1" />
-                      Create Category
-                    </Button>
-                  </ActionGuard>
+                  <Button size="sm" onClick={handleOpenAdd}>
+                    <Plus className="h-3.5 w-3.5 mr-1" />
+                    Create Category
+                  </Button>
                 )
               }
             />
@@ -318,28 +319,24 @@ export function CategoryListPage() {
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-1">
-                      <ActionGuard role={["Admin", "Manager"]} tooltipMessage="Only Managers and Admins can edit categories.">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleOpenEdit(cat)}
-                          title="Edit category"
-                          className="h-8 w-8 p-0"
-                        >
-                          <Pencil className="h-3.5 w-3.5 text-charcoal-muted" />
-                        </Button>
-                      </ActionGuard>
-                      <ActionGuard role={["Admin", "Manager"]} tooltipMessage="Only Managers and Admins can delete categories.">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setDeletingCategory(cat)}
-                          title="Delete category"
-                          className="h-8 w-8 p-0 hover:text-status-error-text"
-                        >
-                          <Trash2 className="h-3.5 w-3.5 text-charcoal-muted hover:text-status-error-text" />
-                        </Button>
-                      </ActionGuard>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleOpenEdit(cat)}
+                        title="Edit category"
+                        className="h-8 w-8 p-0"
+                      >
+                        <Pencil className="h-3.5 w-3.5 text-charcoal-muted" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setDeletingCategory(cat)}
+                        title="Delete category"
+                        className="h-8 w-8 p-0 hover:text-status-error-text"
+                      >
+                        <Trash2 className="h-3.5 w-3.5 text-charcoal-muted hover:text-status-error-text" />
+                      </Button>
                     </div>
                   </TableCell>
                 </TableRow>

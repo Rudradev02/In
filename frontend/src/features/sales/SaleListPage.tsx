@@ -25,17 +25,14 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@
 import { Skeleton } from "@/components/ui/Skeleton"
 import { EmptyState } from "@/components/ui/EmptyState"
 import { ErrorState } from "@/components/ui/ErrorState"
-import { PageHeader } from "@/components/ui/PageHeader"
 import {
   Dialog,
   DialogContent,
   DialogFooter,
 } from "@/components/ui/Dialog"
 import { fadeInItem, staggerContainer } from "@/lib/motion"
-import { usePermission } from "@/lib/permissions"
 
 export function SaleListPage() {
-  const { isCashier } = usePermission()
   const [searchParams, setSearchParams] = useSearchParams()
 
   const [searchTerm, setSearchTerm] = React.useState(searchParams.get("q") || "")
@@ -96,31 +93,32 @@ export function SaleListPage() {
       className="space-y-6"
     >
       {/* Page Header */}
-      <PageHeader
-        title={isCashier ? "My Sales" : "Sales History"}
-        description={
-          isCashier
-            ? "Your recorded transactions with printable thermal receipts."
-            : "Complete transaction ledger with real-time stock deduction audit trails."
-        }
-        icon={<Receipt className="h-6 w-6 text-primary" />}
-        actions={
+      <motion.div variants={fadeInItem} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <Receipt className="h-6 w-6 text-primary" />
+            <h1 className="text-2xl font-bold tracking-tight text-charcoal">Sales History</h1>
+          </div>
+          <p className="text-xs text-charcoal-muted mt-1">
+            Complete transaction ledger with real-time stock deduction audit trails.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3">
           <Link to="/sales/new">
             <Button className="shadow-xs">
               <Plus className="h-4 w-4 mr-1.5" />
               Record Sale
             </Button>
           </Link>
-        }
-      />
+        </div>
+      </motion.div>
 
       {/* KPI Summary Cards */}
       <motion.div variants={fadeInItem} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-surface border border-border rounded-lg p-4 flex items-center justify-between">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-charcoal-muted">
-              {isCashier ? "My Transactions" : "Recorded Transactions"}
-            </p>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-charcoal-muted">Recorded Transactions</p>
             <p className="text-xl font-bold text-charcoal mt-1">{formatNumber(totalSalesCount)}</p>
           </div>
           <div className="h-9 w-9 rounded-md bg-secondary flex items-center justify-center text-primary">
@@ -130,9 +128,7 @@ export function SaleListPage() {
 
         <div className="bg-surface border border-border rounded-lg p-4 flex items-center justify-between">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-charcoal-muted">
-              {isCashier ? "My Revenue" : "Filtered Revenue"}
-            </p>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-charcoal-muted">Filtered Revenue</p>
             <p className="text-xl font-bold text-primary mt-1">{formatINR(totalRevenue)}</p>
           </div>
           <div className="h-9 w-9 rounded-md bg-secondary flex items-center justify-center text-primary">
@@ -142,9 +138,7 @@ export function SaleListPage() {
 
         <div className="bg-surface border border-border rounded-lg p-4 flex items-center justify-between">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-charcoal-muted">
-              {isCashier ? "My Avg Transaction" : "Avg Transaction Value"}
-            </p>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-charcoal-muted">Avg Transaction Value</p>
             <p className="text-xl font-bold text-charcoal mt-1">{formatINR(averageTicket)}</p>
           </div>
           <div className="h-9 w-9 rounded-md bg-secondary flex items-center justify-center text-primary">

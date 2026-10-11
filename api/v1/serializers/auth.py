@@ -1,43 +1,15 @@
 from django.contrib.auth import get_user_model, authenticate
-from django.contrib.auth.models import Group, Permission
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
-
-from api.permissions import get_user_role
 
 User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
-    role = serializers.SerializerMethodField()
-    permissions = serializers.SerializerMethodField()
-
     class Meta:
         model = User
-        fields = [
-            "id",
-            "username",
-            "email",
-            "first_name",
-            "last_name",
-            "is_staff",
-            "is_active",
-            "date_joined",
-            "role",
-            "permissions",
-        ]
-        read_only_fields = ["id", "is_staff", "is_active", "date_joined", "role", "permissions"]
-
-    def get_role(self, obj):
-        return get_user_role(obj)
-
-    def get_permissions(self, obj):
-        if obj.is_superuser:
-            return sorted(list(Permission.objects.values_list("codename", flat=True)))
-        perms = set(obj.user_permissions.values_list("codename", flat=True))
-        for group in obj.groups.all():
-            perms.update(group.permissions.values_list("codename", flat=True))
-        return sorted(list(perms))
+        fields = ["id", "username", "email", "first_name", "last_name", "is_staff", "date_joined"]
+        read_only_fields = ["id", "is_staff", "date_joined"]
 
 
 class LoginSerializer(serializers.Serializer):
@@ -49,9 +21,6 @@ class LoginSerializer(serializers.Serializer):
         password = attrs.get("password")
         user = authenticate(username=username, password=password)
         if not user:
-            existing = User.objects.filter(username=username).first()
-            if existing and existing.check_password(password) and not existing.is_active:
-                raise serializers.ValidationError("User account is disabled.")
             raise serializers.ValidationError("Invalid username or password.")
         if not user.is_active:
             raise serializers.ValidationError("User account is disabled.")
@@ -75,6 +44,4 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data.pop("password_confirm")
         user = User.objects.create_user(**validated_data)
-        cashier_group, _ = Group.objects.get_or_create(name="Cashier")
-        user.groups.add(cashier_group)
         return user

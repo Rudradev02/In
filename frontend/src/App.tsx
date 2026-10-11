@@ -7,7 +7,6 @@ import {
   useLocation,
 } from "react-router-dom"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { MotionConfig } from "framer-motion"
 import { Toaster } from "sonner"
 
 import { AuthProvider, useAuth } from "@/features/auth/AuthContext"
@@ -19,10 +18,7 @@ import { ProductDetailPage } from "@/features/products/ProductDetailPage"
 import { CategoryListPage } from "@/features/categories/CategoryListPage"
 import { SaleListPage } from "@/features/sales/SaleListPage"
 import { SaleCreatePage } from "@/features/sales/SaleCreatePage"
-import { UsersPage } from "@/features/users/UsersPage"
-import { ForbiddenPage } from "@/features/auth/ForbiddenPage"
 import { AppShell } from "@/components/layout/AppShell"
-import { type Role } from "@/lib/types"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -59,21 +55,6 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   return <AppShell>{children}</AppShell>
 }
 
-// Role Protected Route Guard
-function RoleRoute({
-  roles,
-  children,
-}: {
-  roles: Role[]
-  children: React.ReactNode
-}) {
-  const { user } = useAuth()
-  if (user?.role && !roles.includes(user.role)) {
-    return <ForbiddenPage />
-  }
-  return <>{children}</>
-}
-
 // Public Auth Route Guard
 function PublicRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth()
@@ -96,8 +77,7 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <MotionConfig reducedMotion="user">
-        <AuthProvider>
+      <AuthProvider>
         <BrowserRouter>
           <Toaster
             position="top-right"
@@ -131,9 +111,7 @@ export default function App() {
               path="/"
               element={
                 <ProtectedRoute>
-                  <RoleRoute roles={["Admin", "Manager"]}>
-                    <DashboardPage />
-                  </RoleRoute>
+                  <DashboardPage />
                 </ProtectedRoute>
               }
             />
@@ -177,31 +155,12 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/users"
-              element={
-                <ProtectedRoute>
-                  <RoleRoute roles={["Admin"]}>
-                    <UsersPage />
-                  </RoleRoute>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/403"
-              element={
-                <ProtectedRoute>
-                  <ForbiddenPage />
-                </ProtectedRoute>
-              }
-            />
 
             {/* Catch-all Fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>
-    </MotionConfig>
-  </QueryClientProvider>
+    </QueryClientProvider>
   )
 }

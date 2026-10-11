@@ -12,7 +12,6 @@ import {
   Plus,
   ChevronRight,
   PieChart as PieIcon,
-  Package,
 } from "lucide-react"
 import {
   AreaChart,
@@ -38,8 +37,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@
 import { Skeleton } from "@/components/ui/Skeleton"
 import { ErrorState } from "@/components/ui/ErrorState"
 import { EmptyState } from "@/components/ui/EmptyState"
-import { PageHeader } from "@/components/ui/PageHeader"
-import { fadeInItem, staggerContainer, criticalPulseVariants } from "@/lib/motion"
+import { fadeInItem, staggerContainer } from "@/lib/motion"
 
 export function DashboardPage() {
   const [range, setRange] = React.useState<"7d" | "30d" | "90d">("7d")
@@ -83,6 +81,7 @@ export function DashboardPage() {
   }
 
   const { kpis, revenue_trend, category_distribution, low_stock_products, recent_sales } = data
+
   const categoryColors = ["#173D32", "#C77B55", "#4B7A66", "#D9A07E", "#255D83", "#829B8E"]
 
   return (
@@ -93,27 +92,26 @@ export function DashboardPage() {
       className="space-y-6 text-left"
     >
       {/* Top Banner & Quick Actions */}
-      <PageHeader
-        title="Workspace Insights"
-        description="Live telemetry across product catalog health, inventory levels, and transactional revenue."
-        icon={<Boxes className="h-6 w-6 text-primary" />}
-        actions={
-          <>
-            <Link to="/products">
-              <Button variant="outline" size="sm">
-                <Package className="h-3.5 w-3.5 mr-1" />
-                Products
-              </Button>
-            </Link>
-            <Link to="/sales/new">
-              <Button size="sm" className="shadow-xs">
-                <Plus className="h-3.5 w-3.5 mr-1" />
-                Record Sale
-              </Button>
-            </Link>
-          </>
-        }
-      />
+      <motion.div variants={fadeInItem} className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+          <span className="text-xs font-semibold uppercase tracking-wider text-primary">Overview</span>
+          <h1 className="text-2xl font-bold tracking-tight text-charcoal">Workspace Insights</h1>
+          <p className="text-xs text-charcoal-muted mt-0.5">Live metrics across products, inventory health, and sales</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Link to="/sales/new">
+            <Button size="sm" className="shadow-xs">
+              <Plus className="h-4 w-4 mr-1" />
+              Record Sale
+            </Button>
+          </Link>
+          <Link to="/products">
+            <Button variant="outline" size="sm">
+              Manage Products
+            </Button>
+          </Link>
+        </div>
+      </motion.div>
 
       {/* KPI Cards Grid */}
       <motion.div variants={fadeInItem} className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -123,8 +121,8 @@ export function DashboardPage() {
           icon={<Boxes className="h-4 w-4" />}
           variant="primary"
           subtitle={
-            <span className="text-status-success-text flex items-center gap-1 font-medium">
-              <TrendingUp className="h-3 w-3" /> Catalog items
+            <span className="text-status-success-text flex items-center gap-1">
+              <TrendingUp className="h-3 w-3" /> Active in catalog
             </span>
           }
         />
@@ -133,7 +131,7 @@ export function DashboardPage() {
           value={kpis.total_stock_units}
           icon={<Layers className="h-4 w-4" />}
           variant="sage"
-          subtitle="Total volume on hand"
+          subtitle="Across all items"
         />
         <StatCard
           title="Low Stock Alert"
@@ -144,7 +142,7 @@ export function DashboardPage() {
             kpis.low_stock_count > 0 ? (
               <span className="text-status-warning-text font-semibold">Needs attention</span>
             ) : (
-              <span className="text-status-success-text font-medium">All levels healthy</span>
+              <span className="text-status-success-text">All levels healthy</span>
             )
           }
         />
@@ -161,48 +159,36 @@ export function DashboardPage() {
       {/* Main Charts Row */}
       <motion.div variants={fadeInItem} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Revenue Trend Area Chart */}
-        <Card className="lg:col-span-2 shadow-xs">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 border-b border-border/60">
+        <Card className="lg:col-span-2">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
             <div>
               <CardTitle>Revenue Overview</CardTitle>
               <CardDescription>Sales trend over time in INR (₹)</CardDescription>
             </div>
-            {/* Date Range Selector with layoutId pill */}
-            <div className="relative flex items-center gap-1 rounded-md border border-border bg-[#F5F6F3] p-0.5 text-xs">
-              {(["7d", "30d", "90d"] as const).map((r) => {
-                const isSelected = range === r
-                return (
-                  <button
-                    key={r}
-                    onClick={() => setRange(r)}
-                    className={`relative z-10 px-2.5 py-1 rounded text-xs font-medium transition-colors cursor-pointer select-none ${
-                      isSelected
-                        ? "text-primary font-semibold"
-                        : "text-charcoal-muted hover:text-charcoal"
-                    }`}
-                  >
-                    {isSelected && (
-                      <motion.div
-                        layoutId="chartRangePill"
-                        className="absolute inset-0 rounded bg-surface shadow-xs"
-                        transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                      />
-                    )}
-                    <span className="relative z-10">
-                      {r === "7d" ? "7 Days" : r === "30d" ? "30 Days" : "90 Days"}
-                    </span>
-                  </button>
-                )
-              })}
+            {/* Date Range Selector */}
+            <div className="flex items-center gap-1 rounded-md border border-border bg-[#F5F6F3] p-0.5 text-xs">
+              {(["7d", "30d", "90d"] as const).map((r) => (
+                <button
+                  key={r}
+                  onClick={() => setRange(r)}
+                  className={`px-2.5 py-1 rounded text-xs font-medium transition-colors cursor-pointer ${
+                    range === r
+                      ? "bg-surface text-primary shadow-xs font-semibold"
+                      : "text-charcoal-muted hover:text-charcoal"
+                  }`}
+                >
+                  {r === "7d" ? "7 Days" : r === "30d" ? "30 Days" : "90 Days"}
+                </button>
+              ))}
             </div>
           </CardHeader>
-          <CardContent className="pt-4">
-            <div className="h-64 w-full">
+          <CardContent>
+            <div className="h-64 w-full pt-4">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={revenue_trend} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                   <defs>
                     <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#173D32" stopOpacity={0.18} />
+                      <stop offset="5%" stopColor="#173D32" stopOpacity={0.2} />
                       <stop offset="95%" stopColor="#173D32" stopOpacity={0.0} />
                     </linearGradient>
                   </defs>
@@ -237,35 +223,29 @@ export function DashboardPage() {
                     strokeWidth={2.2}
                     fillOpacity={1}
                     fill="url(#revenueGradient)"
-                    isAnimationActive={true}
-                    animationDuration={600}
-                    animationEasing="ease-out"
                   />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
             <div className="mt-3 flex items-center justify-between border-t border-border pt-3 text-xs text-charcoal-muted">
-              <span>
-                Total Lifetime Revenue:{" "}
-                <strong className="text-primary font-bold">{formatINR(kpis.total_revenue)}</strong>
-              </span>
-              <span className="tabular-nums">Live PostgreSQL Aggregate</span>
+              <span>Total Lifetime Revenue: <strong className="text-charcoal font-semibold">{formatINR(kpis.total_revenue)}</strong></span>
+              <span className="tabular-nums">Data aggregated from database records</span>
             </div>
           </CardContent>
         </Card>
 
         {/* Category Breakdown Bar Chart */}
-        <Card className="shadow-xs">
-          <CardHeader className="border-b border-border/60 pb-2">
+        <Card>
+          <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <PieIcon className="h-4 w-4 text-primary" />
               Category Volume
             </CardTitle>
             <CardDescription>Product catalog breakdown</CardDescription>
           </CardHeader>
-          <CardContent className="pt-3">
+          <CardContent>
             {category_distribution.length > 0 ? (
-              <div className="space-y-4">
+              <div className="space-y-4 pt-1">
                 <div className="h-44 w-full">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={category_distribution} layout="vertical" margin={{ left: 0, right: 10, top: 5, bottom: 5 }}>
@@ -287,7 +267,7 @@ export function DashboardPage() {
                           fontSize: "12px",
                         }}
                       />
-                      <Bar dataKey="product_count" radius={[0, 4, 4, 0]} animationDuration={600}>
+                      <Bar dataKey="product_count" radius={[0, 4, 4, 0]}>
                         {category_distribution.map((_, index) => (
                           <Cell key={`cell-${index}`} fill={categoryColors[index % categoryColors.length]} />
                         ))}
@@ -317,8 +297,8 @@ export function DashboardPage() {
       {/* Two Column Section: Low Stock & Recent Transactions */}
       <motion.div variants={fadeInItem} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Low Stock Watchlist */}
-        <Card className="lg:col-span-1 shadow-xs">
-          <CardHeader className="flex flex-row items-center justify-between border-b border-border/60 pb-2">
+        <Card className="lg:col-span-1">
+          <CardHeader className="flex flex-row items-center justify-between">
             <div>
               <CardTitle className="flex items-center gap-2">
                 <AlertTriangle className="h-4 w-4 text-status-warning-text" />
@@ -332,7 +312,7 @@ export function DashboardPage() {
               </Button>
             </Link>
           </CardHeader>
-          <CardContent className="space-y-2.5 pt-3">
+          <CardContent className="space-y-3">
             {low_stock_products.length > 0 ? (
               low_stock_products.map((prod) => (
                 <div
@@ -346,15 +326,9 @@ export function DashboardPage() {
                     </p>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
-                    <motion.div
-                      variants={prod.stock_quantity === 0 ? criticalPulseVariants : undefined}
-                      initial="initial"
-                      animate="pulse"
-                    >
-                      <Badge variant={prod.stock_quantity === 0 ? "destructive" : "warning"} className="tabular-nums">
-                        {prod.stock_quantity === 0 ? "Out of Stock" : `${prod.stock_quantity} Left`}
-                      </Badge>
-                    </motion.div>
+                    <Badge variant={prod.stock_quantity === 0 ? "destructive" : "warning"} className="tabular-nums">
+                      {prod.stock_quantity === 0 ? "Out of Stock" : `${prod.stock_quantity} Left`}
+                    </Badge>
                   </div>
                 </div>
               ))
@@ -368,8 +342,8 @@ export function DashboardPage() {
         </Card>
 
         {/* Recent Transactions Table */}
-        <Card className="lg:col-span-2 shadow-xs">
-          <CardHeader className="flex flex-row items-center justify-between border-b border-border/60 pb-2">
+        <Card className="lg:col-span-2">
+          <CardHeader className="flex flex-row items-center justify-between">
             <div>
               <CardTitle className="flex items-center gap-2">
                 <Receipt className="h-4 w-4 text-primary" />
@@ -383,31 +357,29 @@ export function DashboardPage() {
               </Button>
             </Link>
           </CardHeader>
-          <CardContent className="p-0">
+          <CardContent>
             {recent_sales.length > 0 ? (
-              <Table className="border-0 rounded-none">
+              <Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Product</TableHead>
                     <TableHead>Sold By</TableHead>
-                    <TableHead className="text-right">Qty</TableHead>
+                    <TableHead>Qty</TableHead>
                     <TableHead>Date</TableHead>
                     <TableHead className="text-right">Total</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {recent_sales.map((sale) => (
-                    <TableRow key={sale.id} className="hover:bg-[#FAFBF9]">
+                    <TableRow key={sale.id}>
                       <TableCell>
                         <div className="font-semibold text-xs text-charcoal">{sale.product.name}</div>
-                        <div className="text-[10px] font-mono text-charcoal-muted">{sale.product.sku}</div>
+                        <div className="text-[10px] text-charcoal-muted">{sale.product.sku}</div>
                       </TableCell>
                       <TableCell className="text-xs text-charcoal-muted">
                         @{sale.sold_by.username}
                       </TableCell>
-                      <TableCell className="text-right text-xs font-semibold tabular-nums">
-                        {sale.quantity}
-                      </TableCell>
+                      <TableCell className="text-xs font-medium tabular-nums">{sale.quantity}</TableCell>
                       <TableCell className="text-xs text-charcoal-muted tabular-nums">
                         {formatDateTime(sale.created_at)}
                       </TableCell>
@@ -419,17 +391,15 @@ export function DashboardPage() {
                 </TableBody>
               </Table>
             ) : (
-              <div className="p-6">
-                <EmptyState
-                  title="No sales yet"
-                  description="Record your first sale to start populating history."
-                  action={
-                    <Link to="/sales/new">
-                      <Button size="sm">Record Sale</Button>
-                    </Link>
-                  }
-                />
-              </div>
+              <EmptyState
+                title="No sales yet"
+                description="Record your first sale to start populating history."
+                action={
+                  <Link to="/sales/new">
+                    <Button size="sm">Record Sale</Button>
+                  </Link>
+                }
+              />
             )}
           </CardContent>
         </Card>

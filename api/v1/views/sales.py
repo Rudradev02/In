@@ -5,14 +5,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema
 
-from api.permissions import SalePermission
 from sales.models import Sale
 from sales.services import record_sale
 from ..serializers.sales import SaleCreateSerializer, SaleSerializer
 
 
 class SaleViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated, SalePermission]
+    permission_classes = [IsAuthenticated]
     http_method_names = ["get", "post", "head", "options"]
 
     def get_serializer_class(self):
@@ -21,16 +20,7 @@ class SaleViewSet(viewsets.ModelViewSet):
         return SaleSerializer
 
     def get_queryset(self):
-        user = self.request.user
         queryset = Sale.objects.select_related("product", "sold_by").order_by("-created_at")
-
-        # Isolation: Cashier can only view their own sales transactions
-        if not (
-            user.is_superuser
-            or user.groups.filter(name__in=["Admin", "Manager"]).exists()
-            or user.has_perm("accounts.view_all_sales")
-        ):
-            queryset = queryset.filter(sold_by=user)
 
         # Search filter
         q = self.request.query_params.get("q", "").strip()

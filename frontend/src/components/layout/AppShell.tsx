@@ -11,11 +11,9 @@ import {
   Menu,
   X,
   Calendar,
-  Users,
 } from "lucide-react"
 import { useAuth } from "@/features/auth/AuthContext"
 import { Button } from "@/components/ui/Button"
-import { Badge } from "@/components/ui/Badge"
 import { cn } from "@/lib/utils"
 
 interface AppShellProps {
@@ -28,38 +26,24 @@ export function AppShell({ children }: AppShellProps) {
   const navigate = useNavigate()
   const [mobileOpen, setMobileOpen] = React.useState(false)
 
-  const isCashier = user?.role === "Cashier"
-  const isAdmin = user?.role === "Admin" || user?.is_staff
-
-  const navItems = React.useMemo(() => {
-    const items = []
-    if (!isCashier) {
-      items.push({ label: "Overview", href: "/", icon: LayoutDashboard })
-    }
-    items.push(
-      { label: "Products", href: "/products", icon: Package },
-      { label: "Categories", href: "/categories", icon: Tags },
-      { label: isCashier ? "My Sales" : "Sales History", href: "/sales", icon: Receipt }
-    )
-    if (isAdmin) {
-      items.push({ label: "Users & Access", href: "/users", icon: Users })
-    }
-    return items
-  }, [isCashier, isAdmin])
+  const navItems = [
+    { label: "Overview", href: "/", icon: LayoutDashboard },
+    { label: "Products", href: "/products", icon: Package },
+    { label: "Categories", href: "/categories", icon: Tags },
+    { label: "Sales History", href: "/sales", icon: Receipt },
+  ]
 
   const handleLogout = async () => {
     await logout()
     navigate("/login")
   }
 
-  const [currentDate] = React.useState(() =>
-    new Intl.DateTimeFormat("en-IN", {
-      weekday: "short",
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    }).format(new Date())
-  )
+  const currentDate = new Intl.DateTimeFormat("en-IN", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).format(new Date())
 
   return (
     <div className="flex min-h-screen bg-background text-charcoal">
@@ -85,19 +69,14 @@ export function AppShell({ children }: AppShellProps) {
                 key={item.href}
                 to={item.href}
                 className={cn(
-                  "relative flex items-center gap-3 px-3.5 py-2.5 rounded-md text-xs font-medium transition-colors select-none",
-                  isActive ? "text-primary font-semibold" : "text-charcoal-muted hover:bg-[#F2F4F0] hover:text-charcoal"
+                  "flex items-center gap-3 px-3.5 py-2.5 rounded-md text-xs font-medium transition-colors select-none",
+                  isActive
+                    ? "bg-secondary text-primary font-semibold shadow-xs"
+                    : "text-charcoal-muted hover:bg-[#F2F4F0] hover:text-charcoal"
                 )}
               >
-                {isActive && (
-                  <motion.div
-                    layoutId="activeNavIndicator"
-                    className="absolute inset-0 rounded-md bg-secondary shadow-xs"
-                    transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                  />
-                )}
-                <Icon className={cn("relative z-10 h-4 w-4 shrink-0", isActive ? "text-primary" : "text-charcoal-muted")} />
-                <span className="relative z-10">{item.label}</span>
+                <Icon className={cn("h-4 w-4 shrink-0", isActive ? "text-primary" : "text-charcoal-muted")} />
+                <span>{item.label}</span>
               </Link>
             )
           })}
@@ -111,17 +90,9 @@ export function AppShell({ children }: AppShellProps) {
                 {user?.username?.charAt(0).toUpperCase() || "U"}
               </div>
               <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  <p className="text-xs font-semibold text-charcoal truncate">
-                    {user?.first_name ? `${user.first_name} ${user.last_name || ""}` : user?.username}
-                  </p>
-                  <Badge
-                    variant={user?.role === "Admin" ? "default" : user?.role === "Manager" ? "outline" : "secondary"}
-                    className="text-[9px] px-1 py-0 h-4 font-semibold uppercase tracking-wider"
-                  >
-                    {user?.role || "Cashier"}
-                  </Badge>
-                </div>
+                <p className="text-xs font-semibold text-charcoal truncate">
+                  {user?.first_name ? `${user.first_name} ${user.last_name || ""}` : user?.username}
+                </p>
                 <p className="text-[10px] text-charcoal-muted truncate">@{user?.username}</p>
               </div>
             </div>
@@ -224,20 +195,12 @@ export function AppShell({ children }: AppShellProps) {
 
               <div className="border-t border-border p-4 bg-[#F8F9F7]">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary font-semibold text-xs shrink-0">
+                  <div className="flex items-center gap-2">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary font-semibold text-xs">
                       {user?.username?.charAt(0).toUpperCase()}
                     </div>
                     <div className="truncate">
-                      <div className="flex items-center gap-1.5">
-                        <p className="text-xs font-semibold text-charcoal">{user?.username}</p>
-                        <Badge
-                          variant={user?.role === "Admin" ? "default" : user?.role === "Manager" ? "outline" : "secondary"}
-                          className="text-[9px] px-1 py-0 h-4 font-semibold uppercase tracking-wider"
-                        >
-                          {user?.role || "Cashier"}
-                        </Badge>
-                      </div>
+                      <p className="text-xs font-semibold text-charcoal">{user?.username}</p>
                     </div>
                   </div>
                   <Button variant="ghost" size="sm" onClick={handleLogout}>

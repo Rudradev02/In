@@ -4,13 +4,12 @@ from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from api.permissions import CategoryPermission
 from inventory.models import Category
 from ..serializers.categories import CategorySerializer
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated, CategoryPermission]
+    permission_classes = [IsAuthenticated]
     serializer_class = CategorySerializer
     pagination_class = None  # Categories are typically small and needed in full for selects
 

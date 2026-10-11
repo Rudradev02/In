@@ -28,7 +28,6 @@ import {
   DialogContent,
   DialogFooter,
 } from "@/components/ui/Dialog"
-import { PageHeader } from "@/components/ui/PageHeader"
 import { fadeInItem, staggerContainer } from "@/lib/motion"
 
 export function SaleCreatePage() {
@@ -71,15 +70,10 @@ export function SaleCreatePage() {
   const isOutOfStock = currentStock <= 0
   const isInsufficientStock = quantity > currentStock
 
-  const handleSelectProduct = (productId: string) => {
-    setSelectedProductId(productId)
-    if (formErrors.product_id) setFormErrors((prev) => ({ ...prev, product_id: "" }))
-  }
-
-  const handleQuantityChange = (newQty: number) => {
-    setQuantity(newQty)
-    if (formErrors.quantity) setFormErrors((prev) => ({ ...prev, quantity: "" }))
-  }
+  // Reset errors when inputs change
+  React.useEffect(() => {
+    setFormErrors({})
+  }, [selectedProductId, quantity])
 
   // Mutation
   const createSaleMutation = useMutation({
@@ -152,11 +146,14 @@ export function SaleCreatePage() {
       </motion.div>
 
       {/* Header */}
-      <PageHeader
-        title="Record Sale"
-        description="Dispatch inventory and create an authoritative transaction with real-time stock deduction."
-        icon={<Receipt className="h-6 w-6 text-primary" />}
-      />
+      <motion.div variants={fadeInItem} className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-charcoal">Record Sale</h1>
+          <p className="text-xs text-charcoal-muted mt-1">
+            Dispatch inventory and create an authoritative transaction with real-time stock deduction.
+          </p>
+        </div>
+      </motion.div>
 
       {/* Main Grid: Form & Preview */}
       <motion.div variants={fadeInItem} className="grid grid-cols-1 md:grid-cols-12 gap-6">
@@ -176,7 +173,7 @@ export function SaleCreatePage() {
                   <label className="text-xs font-semibold text-charcoal">Select Product *</label>
                   <Select
                     value={selectedProductId}
-                    onChange={(e) => handleSelectProduct(e.target.value)}
+                    onChange={(e) => setSelectedProductId(e.target.value)}
                     disabled={isLoadingProducts}
                   >
                     <option value="">-- Choose a product from inventory --</option>
@@ -231,7 +228,7 @@ export function SaleCreatePage() {
                       size="sm"
                       className="h-9 w-9 p-0 shrink-0"
                       disabled={quantity <= 1}
-                      onClick={() => handleQuantityChange(Math.max(1, quantity - 1))}
+                      onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                     >
                       <Minus className="h-3.5 w-3.5" />
                     </Button>
@@ -240,7 +237,7 @@ export function SaleCreatePage() {
                       min="1"
                       max={activeProduct ? activeProduct.stock_quantity : undefined}
                       value={quantity}
-                      onChange={(e) => handleQuantityChange(parseInt(e.target.value) || 0)}
+                      onChange={(e) => setQuantity(parseInt(e.target.value) || 0)}
                       className="text-center font-bold text-sm"
                       required
                     />
@@ -250,7 +247,7 @@ export function SaleCreatePage() {
                       size="sm"
                       className="h-9 w-9 p-0 shrink-0"
                       disabled={activeProduct ? quantity >= activeProduct.stock_quantity : false}
-                      onClick={() => handleQuantityChange(quantity + 1)}
+                      onClick={() => setQuantity((q) => q + 1)}
                     >
                       <Plus className="h-3.5 w-3.5" />
                     </Button>
