@@ -49,6 +49,9 @@ class LoginSerializer(serializers.Serializer):
         password = attrs.get("password")
         user = authenticate(username=username, password=password)
         if not user:
+            existing = User.objects.filter(username=username).first()
+            if existing and existing.check_password(password) and not existing.is_active:
+                raise serializers.ValidationError("User account is disabled.")
             raise serializers.ValidationError("Invalid username or password.")
         if not user.is_active:
             raise serializers.ValidationError("User account is disabled.")
