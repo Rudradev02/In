@@ -38,14 +38,12 @@ export function AppShell({ children }: AppShellProps) {
     navigate("/login")
   }
 
-  const [currentDate] = React.useState(() =>
-    new Intl.DateTimeFormat("en-IN", {
-      weekday: "short",
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    }).format(new Date())
-  )
+  const currentDate = new Intl.DateTimeFormat("en-IN", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).format(new Date())
 
   return (
     <div className="flex min-h-screen bg-background text-charcoal">
@@ -71,19 +69,14 @@ export function AppShell({ children }: AppShellProps) {
                 key={item.href}
                 to={item.href}
                 className={cn(
-                  "relative flex items-center gap-3 px-3.5 py-2.5 rounded-md text-xs font-medium transition-colors select-none",
-                  isActive ? "text-primary font-semibold" : "text-charcoal-muted hover:bg-[#F2F4F0] hover:text-charcoal"
+                  "flex items-center gap-3 px-3.5 py-2.5 rounded-md text-xs font-medium transition-colors select-none",
+                  isActive
+                    ? "bg-secondary text-primary font-semibold shadow-xs"
+                    : "text-charcoal-muted hover:bg-[#F2F4F0] hover:text-charcoal"
                 )}
               >
-                {isActive && (
-                  <motion.div
-                    layoutId="activeNavIndicator"
-                    className="absolute inset-0 rounded-md bg-secondary shadow-xs"
-                    transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                  />
-                )}
-                <Icon className={cn("relative z-10 h-4 w-4 shrink-0", isActive ? "text-primary" : "text-charcoal-muted")} />
-                <span className="relative z-10">{item.label}</span>
+                <Icon className={cn("h-4 w-4 shrink-0", isActive ? "text-primary" : "text-charcoal-muted")} />
+                <span>{item.label}</span>
               </Link>
             )
           })}

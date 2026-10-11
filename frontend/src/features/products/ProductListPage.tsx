@@ -23,7 +23,6 @@ import { Skeleton } from "@/components/ui/Skeleton"
 import { EmptyState } from "@/components/ui/EmptyState"
 import { ErrorState } from "@/components/ui/ErrorState"
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog"
-import { PageHeader } from "@/components/ui/PageHeader"
 import {
   Dialog,
   DialogContent,
@@ -220,16 +219,17 @@ export function ProductListPage() {
   return (
     <motion.div variants={staggerContainer} initial="initial" animate="animate" className="space-y-6 text-left">
       {/* Page Header */}
-      <PageHeader
-        title="Products & Inventory"
-        description="Manage stock levels, SKUs, pricing, and catalog categories."
-        actions={
-          <Button onClick={openAddModal} size="sm" className="shadow-xs">
-            <Plus className="h-4 w-4 mr-1" />
-            Add Product
-          </Button>
-        }
-      />
+      <motion.div variants={fadeInItem} className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+          <span className="text-xs font-semibold uppercase tracking-wider text-primary">Catalog</span>
+          <h1 className="text-2xl font-bold tracking-tight text-charcoal">Products & Inventory</h1>
+          <p className="text-xs text-charcoal-muted mt-0.5">Manage stock levels, SKUs, pricing, and catalog categories</p>
+        </div>
+        <Button onClick={openAddModal} size="sm">
+          <Plus className="h-4 w-4 mr-1" />
+          Add Product
+        </Button>
+      </motion.div>
 
       {/* Filter & Search Bar */}
       <motion.div variants={fadeInItem} className="flex flex-col md:flex-row items-center gap-3 bg-surface p-3.5 rounded-lg border border-border">

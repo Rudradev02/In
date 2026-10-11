@@ -23,7 +23,6 @@ import { Skeleton } from "@/components/ui/Skeleton"
 import { EmptyState } from "@/components/ui/EmptyState"
 import { ErrorState } from "@/components/ui/ErrorState"
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog"
-import { PageHeader } from "@/components/ui/PageHeader"
 import {
   Dialog,
   DialogContent,
@@ -182,17 +181,24 @@ export function CategoryListPage() {
       className="space-y-6"
     >
       {/* Page Header */}
-      <PageHeader
-        title="Categories"
-        description="Organize catalog taxonomy and track product distribution across departments."
-        icon={<Tags className="h-6 w-6 text-primary" />}
-        actions={
+      <motion.div variants={fadeInItem} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <Tags className="h-6 w-6 text-primary" />
+            <h1 className="text-2xl font-bold tracking-tight text-charcoal">Categories</h1>
+          </div>
+          <p className="text-xs text-charcoal-muted mt-1">
+            Organize catalog taxonomy and track product distribution across departments.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3">
           <Button onClick={handleOpenAdd} className="shadow-xs">
             <Plus className="h-4 w-4 mr-1.5" />
             Add Category
           </Button>
-        }
-      />
+        </div>
+      </motion.div>
 
       {/* KPI Overview Chips */}
       <motion.div variants={fadeInItem} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
