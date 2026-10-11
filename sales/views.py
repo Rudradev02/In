@@ -23,22 +23,24 @@ def sale_detail(request, pk):
     return render(request, "sales/sale_detail.html", {"sale": get_object_or_404(Sale.objects.select_related("product", "sold_by"), pk=pk)})
 
 
+from django.core.exceptions import ValidationError
+from .services import record_sale
+
+
 @login_required
 def sale_create(request):
     form = SaleForm(request.POST or None)
     if form.is_valid():
-        with transaction.atomic():
-            product = Product.objects.select_for_update().get(pk=form.cleaned_data["product"].pk)
-            quantity = form.cleaned_data["quantity"]
-            if quantity > product.stock_quantity:
-                form.add_error("quantity", f"Only {product.stock_quantity} units are currently available.")
-            else:
-                sale = Sale.objects.create(
-                    product=product, quantity=quantity, unit_price=product.price,
-                    total_price=product.price * quantity, sold_by=request.user,
-                )
-                product.stock_quantity -= quantity
-                product.save(update_fields=["stock_quantity", "updated_at"])
-                messages.success(request, f"Sale recorded for {product.name}.")
-                return redirect("sale-detail", sale.pk)
+        try:
+            sale = record_sale(
+                product_id=form.cleaned_data["product"].pk,
+                quantity=form.cleaned_data["quantity"],
+                user=request.user,
+            )
+            messages.success(request, f"Sale recorded for {sale.product.name}.")
+            return redirect("sale-detail", sale.pk)
+        except ValidationError as e:
+            for field, errors in e.message_dict.items():
+                for error in errors:
+                    form.add_error(field if field != "__all__" else None, error)
     return render(request, "sales/sale_form.html", {"form": form})
