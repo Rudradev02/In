@@ -120,11 +120,15 @@ The React SPA will open at [http://localhost:5173/](http://localhost:5173/).
 
 ---
 
-## Demo Credentials
+## Demo Credentials & Role Access
 
-After running `python manage.py seed_data`:
-- **Username**: `demo`
-- **Password**: `demo12345`
+After running `python manage.py seed_data`, the following role-based demo accounts are ready to use:
+
+| Role | Username | Password | Access Capabilities |
+| :--- | :--- | :--- | :--- |
+| **Admin** | `admin` | `admin12345` | Full system control, User management, Role change, User deactivation, Audit logs, plus all Manager capabilities. |
+| **Manager** | `manager` | `manager12345` | Catalog CRUD, Price edits, Stock adjustments, Company revenue & financial reports, All sales transactions. |
+| **Cashier** | `cashier` | `cashier12345` | Product catalog viewing, Order / Sale checkout, Own sales transaction history & receipts. *(Restricted from editing prices, deleting products, adjusting stock, viewing reports, or accessing other cashiers' sales).* |
 
 ---
 

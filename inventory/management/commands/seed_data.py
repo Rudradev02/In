@@ -1,22 +1,50 @@
 from decimal import Decimal
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 
 from inventory.models import Category, Product
 from sales.models import Sale
 
 
 class Command(BaseCommand):
-    help = "Create demo categories, products, sales, and a demo user."
+    help = "Create demo categories, products, sales, and role-based demo users (Admin, Manager, Cashier)."
 
     def handle(self, *args, **options):
         User = get_user_model()
-        demo_user, created = User.objects.get_or_create(username="demo")
-        if created:
-            demo_user.set_password("demo12345")
-            demo_user.first_name = "Demo"
-            demo_user.last_name = "Manager"
-            demo_user.save()
+        
+        # Ensure role groups exist
+        admin_group, _ = Group.objects.get_or_create(name="Admin")
+        manager_group, _ = Group.objects.get_or_create(name="Manager")
+        cashier_group, _ = Group.objects.get_or_create(name="Cashier")
+        
+        group_map = {
+            "Admin": admin_group,
+            "Manager": manager_group,
+            "Cashier": cashier_group,
+        }
+
+        # 1. Create one demo user per role
+        demo_users_spec = [
+            ("admin", "admin12345", "System", "Administrator", "Admin", True, "admin@invlab.local"),
+            ("manager", "manager12345", "Store", "Manager", "Manager", True, "manager@invlab.local"),
+            ("cashier", "cashier12345", "Frontdesk", "Cashier", "Cashier", False, "cashier@invlab.local"),
+        ]
+        created_users = {}
+        for username, password, fname, lname, role_name, is_staff, email in demo_users_spec:
+            user, created = User.objects.get_or_create(username=username, defaults={"email": email})
+            user.set_password(password)
+            user.first_name = fname
+            user.last_name = lname
+            user.is_staff = is_staff
+            user.is_active = True
+            user.save()
+            user.groups.clear()
+            user.groups.add(group_map[role_name])
+            created_users[username] = user
+
+        # Legacy fallback
+        demo_user = created_users["manager"]
 
         category_data = [
             ("Electronics", "Devices and everyday tech accessories."),
@@ -58,4 +86,4 @@ class Command(BaseCommand):
                 product.stock_quantity = max(0, product.stock_quantity - quantity)
                 product.save(update_fields=["stock_quantity", "updated_at"])
 
-        self.stdout.write(self.style.SUCCESS("Demo data is ready. Login with demo / demo12345"))
+        self.stdout.write(self.style.SUCCESS("Demo data ready. Demo accounts: admin / admin12345 (Admin), manager / manager12345 (Manager), cashier / cashier12345 (Cashier)"))
