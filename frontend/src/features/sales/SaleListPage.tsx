@@ -25,6 +25,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@
 import { Skeleton } from "@/components/ui/Skeleton"
 import { EmptyState } from "@/components/ui/EmptyState"
 import { ErrorState } from "@/components/ui/ErrorState"
+import { PageHeader } from "@/components/ui/PageHeader"
 import {
   Dialog,
   DialogContent,
@@ -93,26 +94,19 @@ export function SaleListPage() {
       className="space-y-6"
     >
       {/* Page Header */}
-      <motion.div variants={fadeInItem} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <Receipt className="h-6 w-6 text-primary" />
-            <h1 className="text-2xl font-bold tracking-tight text-charcoal">Sales History</h1>
-          </div>
-          <p className="text-xs text-charcoal-muted mt-1">
-            Complete transaction ledger with real-time stock deduction audit trails.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-3">
+      <PageHeader
+        title="Sales History"
+        description="Complete transaction ledger with real-time stock deduction audit trails."
+        icon={<Receipt className="h-6 w-6 text-primary" />}
+        actions={
           <Link to="/sales/new">
             <Button className="shadow-xs">
               <Plus className="h-4 w-4 mr-1.5" />
               Record Sale
             </Button>
           </Link>
-        </div>
-      </motion.div>
+        }
+      />
 
       {/* KPI Summary Cards */}
       <motion.div variants={fadeInItem} className="grid grid-cols-1 sm:grid-cols-3 gap-4">

@@ -23,6 +23,7 @@ import { StatCard } from "@/components/ui/StatCard"
 import { Skeleton } from "@/components/ui/Skeleton"
 import { ErrorState } from "@/components/ui/ErrorState"
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog"
+import { PageHeader } from "@/components/ui/PageHeader"
 import {
   Dialog,
   DialogContent,
@@ -122,56 +123,52 @@ export function ProductDetailPage() {
       </motion.div>
 
       {/* Product Hero Header */}
-      <motion.div variants={fadeInItem} className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-border pb-5">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs font-semibold uppercase tracking-wider text-primary">
-              {product.category?.name || "Uncategorized"}
-            </span>
-            {product.stock_quantity === 0 ? (
-              <Badge variant="destructive">Out of Stock</Badge>
-            ) : product.is_low_stock ? (
-              <Badge variant="warning">Low Stock</Badge>
-            ) : (
-              <Badge variant="success">Healthy</Badge>
-            )}
-          </div>
-          <h1 className="text-2xl font-bold tracking-tight text-charcoal">{product.name}</h1>
-          <p className="text-xs text-charcoal-muted tabular-nums mt-0.5">SKU Code: {product.sku}</p>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              setIsAdjustOpen(true)
-              setAdjustmentAmount(0)
-              setAdjustmentReason("")
-              setAdjustError(null)
-            }}
-          >
-            <SlidersHorizontal className="h-3.5 w-3.5 mr-1" />
-            Adjust Stock
-          </Button>
-
-          <Link to={`/sales/new?product=${product.id}`}>
-            <Button size="sm">
-              <Receipt className="h-3.5 w-3.5 mr-1" />
-              Record Sale
+      <PageHeader
+        title={product.name}
+        description={`SKU: ${product.sku} · Category: ${product.category?.name || "Uncategorized"}`}
+        badge={
+          product.stock_quantity === 0 ? (
+            <Badge variant="destructive">Out of Stock</Badge>
+          ) : product.is_low_stock ? (
+            <Badge variant="warning">Low Stock</Badge>
+          ) : (
+            <Badge variant="success">Healthy</Badge>
+          )
+        }
+        actions={
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setIsAdjustOpen(true)
+                setAdjustmentAmount(0)
+                setAdjustmentReason("")
+                setAdjustError(null)
+              }}
+            >
+              <SlidersHorizontal className="h-3.5 w-3.5 mr-1" />
+              Adjust Stock
             </Button>
-          </Link>
 
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={() => setIsDeleteOpen(true)}
-            title="Delete product"
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-          </Button>
-        </div>
-      </motion.div>
+            <Link to={`/sales/new?product=${product.id}`}>
+              <Button size="sm">
+                <Receipt className="h-3.5 w-3.5 mr-1" />
+                Record Sale
+              </Button>
+            </Link>
+
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => setIsDeleteOpen(true)}
+              title="Delete product"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </Button>
+          </div>
+        }
+      />
 
       {/* KPI Cards */}
       <motion.div variants={fadeInItem} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
