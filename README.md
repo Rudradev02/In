@@ -61,8 +61,8 @@ Inventory-Sales-Manager/
 ### 2. Clone and Setup Environment
 
 ```bash
-git clone https://github.com/Rudradev02/Inventory-Sales-Manager.git
-cd Inventory-Sales-Manager
+git clone https://github.com/Rudradev02/InvLab.git
+cd InvLab
 
 # Create a virtual environment
 python -m venv venv
