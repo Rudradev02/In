@@ -6,11 +6,13 @@ from .views.categories import CategoryViewSet
 from .views.dashboard import DashboardStatsView
 from .views.products import ProductViewSet
 from .views.sales import SaleViewSet
+from .views.users import UserViewSet
 
 router = DefaultRouter()
 router.register(r"categories", CategoryViewSet, basename="category")
 router.register(r"products", ProductViewSet, basename="product")
 router.register(r"sales", SaleViewSet, basename="sale")
+router.register(r"users", UserViewSet, basename="user")
 
 urlpatterns = [
     path("auth/csrf/", CsrfTokenView.as_view(), name="api-auth-csrf"),

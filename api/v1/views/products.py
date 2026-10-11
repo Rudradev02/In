@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 
+from api.permissions import CanAdjustStock, ProductPermission
 from inventory.models import Product
 from inventory.services import adjust_stock
 from ..serializers.products import (
@@ -18,7 +19,7 @@ from ..serializers.products import (
 
 
 class ProductViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ProductPermission]
 
     def get_serializer_class(self):
         if self.action in ["create", "update", "partial_update"]:
@@ -71,7 +72,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         request=StockAdjustmentSerializer,
         responses={200: ProductDetailSerializer},
     )
-    @action(detail=True, methods=["post"], url_path="adjust-stock")
+    @action(detail=True, methods=["post"], url_path="adjust-stock", permission_classes=[IsAuthenticated, CanAdjustStock])
     def adjust_stock(self, request, pk=None):
         product = self.get_object()
         serializer = StockAdjustmentSerializer(data=request.data)
